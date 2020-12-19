@@ -37,38 +37,38 @@ namespace DALApi
      </example>
      </summary>
     */
-   static class DalConfig
+   static class DLConfig
    {
-      public class DalPackage
+      public class DLPackage
       {
          public string Name;
          public string PkgName;
          public string NameSpace;
          public string ClassName;
       }
-      internal static string DalName;
-      internal static Dictionary<string, DalPackage> DalPackages;
+      internal static string DLName;
+      internal static Dictionary<string, DLPackage> DLPackages;
 
       /// <summary>
       /// Static constructor extracts Dal packages list and Dal type from
       /// Dal configuration file config.xml
       /// </summary>
-      static DalConfig()
+      static DLConfig()
       {
-         XElement dalConfig = XElement.Load(@"config.xml");
-         DalName = dalConfig.Element("dal").Value;
-         DalPackages = (from pkg in dalConfig.Element("dal-packages").Elements()
-                        let tmp1 = pkg.Attribute("namespace")
-                        let nameSpace = tmp1 == null ? "Dal" : tmp1.Value
-                        let tmp2 = pkg.Attribute("class")
-                        let className = tmp2 == null ? pkg.Value : tmp2.Value
-                        select new DalPackage()
-                        {
-                           Name = "" + pkg.Name,
-                           PkgName = pkg.Value,
-                           NameSpace = nameSpace,
-                           ClassName = className
-                        })
+         XElement dlConfig = XElement.Load(@"config.xml");
+         DLName = dlConfig.Element("dl").Value;
+         DLPackages = (from pkg in dlConfig.Element("dl-packages").Elements()
+                       let tmp1 = pkg.Attribute("namespace")
+                       let nameSpace = tmp1 == null ? "DL" : tmp1.Value
+                       let tmp2 = pkg.Attribute("class")
+                       let className = tmp2 == null ? pkg.Value : tmp2.Value
+                       select new DLPackage()
+                       {
+                          Name = "" + pkg.Name,
+                          PkgName = pkg.Value,
+                          NameSpace = nameSpace,
+                          ClassName = className
+                       })
                         .ToDictionary(p => "" + p.Name, p => p);
       }
    }
@@ -77,9 +77,9 @@ namespace DALApi
    /// Represents errors during DalApi initialization
    /// </summary>
    [Serializable]
-   public class DalConfigException : Exception
+   public class DLConfigException : Exception
    {
-      public DalConfigException(string message) : base(message) { }
-      public DalConfigException(string message, Exception inner) : base(message, inner) { }
+      public DLConfigException(string message) : base(message) { }
+      public DLConfigException(string message, Exception inner) : base(message, inner) { }
    }
 }

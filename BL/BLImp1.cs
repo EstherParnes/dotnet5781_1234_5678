@@ -13,7 +13,7 @@ namespace BL
    {
       static Random rnd = new Random(DateTime.Now.Millisecond);
 
-      readonly IDAL dal = DALFactory.GetDal();
+      readonly IDAL dal = DALFactory.GetDL();
 
       public Weather GetWeather(int day)
       {

@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="DalConfig.cs" />
+    <Compile Include="DLConfig.cs" />
     <Compile Include="DALFactory.cs" />
     <Compile Include="IDAL.cs" />
     <Compile Include="IClonable.cs" />

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-//using DL_DAL;
+
 
 namespace DALApi
 {
@@ -35,32 +35,32 @@ namespace DALApi
       /// which must contain the single instance of the class.
       /// </summary>
       /// <returns>Dal tier implementation object</returns>
-      public static IDAL GetDal()
+      public static IDAL GetDL()
       {
          // get dal implementation name from config.xml according to <data> element
-         string dalType = DalConfig.DalName;
+         string dlType = DLConfig.DLName;
          // bring package name (dll file name) for the dal name (above) from the list of packages in config.xml
-         DalConfig.DalPackage dalPackage;
+         DLConfig.DLPackage dlPackage;
          try // get dal package info according to <dal> element value in config file
          {
-            dalPackage = DalConfig.DalPackages[dalType];
+            dlPackage = DLConfig.DLPackages[dlType];
          }
          catch (KeyNotFoundException ex)
          {
             // if package name is not found in the list - there is a problem in config.xml
-            throw new DalConfigException($"Wrong DL type: {dalType}", ex);
+            throw new DLConfigException($"Wrong DL type: {dlType}", ex);
          }
-         string dalPackageName = dalPackage.PkgName;
-         string dalNameSpace = dalPackage.NameSpace;
-         string dalClass = dalPackage.ClassName;
+         string dlPackageName = dlPackage.PkgName;
+         string dlNameSpace = dlPackage.NameSpace;
+         string dlClass = dlPackage.ClassName;
 
          try // Load into CLR the dal implementation assembly according to dll file name (taken above)
          {
-            Assembly.Load(dalPackageName);
+            Assembly.Load(dlPackageName);
          }
          catch (Exception ex)
          {
-            throw new DalConfigException($"Failed loading {dalPackageName}.dll", ex);
+            throw new DLConfigException($"Failed loading {dlPackageName}.dll", ex);
          }
 
          // Get concrete Dal implementation's class metadata object
@@ -76,11 +76,11 @@ namespace DALApi
          Type type;
          try
          {
-            type = Type.GetType($"{dalNameSpace}.{dalClass}, {dalPackageName}", true);
+            type = Type.GetType($"{dlNameSpace}.{dlClass}, {dlPackageName}", true);
          }
          catch (Exception ex)
          { // If the type is not found - the implementation is not correct - it looks like the class name is wrong...
-            throw new DalConfigException($"Class not found due to a wrong namespace or/and class name: {dalPackageName}:{dalNameSpace}.{dalClass}", ex);
+            throw new DLConfigException($"Class not found due to a wrong namespace or/and class name: {dlPackageName}:{dlNameSpace}.{dlClass}", ex);
          }
          // *** Get concrete Dal implementation's Instance
          // Get property info for public static property named "Instance" (in the dal implementation class- taken above)
@@ -93,13 +93,13 @@ namespace DALApi
             IDAL dal = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static).GetValue(null) as IDAL;
             // If the instance property is not initialized (i.e. it does not hold a real instance reference)...
             if (dal == null)
-               throw new DalConfigException($"Class {dalNameSpace}.{dalClass} instance is not initialized");
+               throw new DLConfigException($"Class {dlNameSpace}.{dlClass} instance is not initialized");
             // now it looks like we have appropriate dal implementation instance :-)
             return dal;
          }
          catch (NullReferenceException ex)
          {
-            throw new DalConfigException($"Class {dalNameSpace}.{dalClass} is not a singleton", ex);
+            throw new DLConfigException($"Class {dlNameSpace}.{dlClass} is not a singleton", ex);
          }
 
       }
